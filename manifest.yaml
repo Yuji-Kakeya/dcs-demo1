@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dcs-demo1
+  name: dcs-demo1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dcs-demo1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: dcs-demo1
+    spec:
+      containers:
+      - image: public.ecr.aws/a9e2b4u8/dcs-demo1
+        imagePullPolicy: Always
+        name: dcs-demo1
+        resources: {}
+        env:
+        - name: NODENAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dcs-demo1
+  name: dcs-demo1
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: dcs-demo1
+  type: ClusterIP
+status:
